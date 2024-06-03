@@ -3,6 +3,8 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 interface Item {
   _id: string;
@@ -13,11 +15,22 @@ interface Item {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [items, setItems] = useState<Item[]>([]);
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/login");
+    } else {
+      fetchItems();
+    }
+  }, []);
 
   useEffect(() => {
     fetchItems();
@@ -40,20 +53,52 @@ export default function Home() {
         username,
         password,
       });
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Password Saved Successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      fetchItems();
     } catch (error) {
       console.log(error);
     }
   };
 
   const deleteItem = async (id: string) => {
-    await axios.delete(`/api/items/${id}`);
-    setItems(items.filter((item) => item._id !== id));
+    Swal.fire({
+      title: "Are you sure? you want to delete item",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`/api/items/${id}`);
+          setItems(items.filter((item) => item._id !== id));
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    });
   };
 
   return (
-    <div className="xs:max-w-lg max-w-xl mx-auto p-4">
+    <div className="xs:max-w-lg max-w-2xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">CRUD Application</h1>
-      <div className="mb-4">
+      <div className="mb-4 max-w-md">
         <input
           type="text"
           className="border p-2 w-full mb-2"
@@ -127,7 +172,13 @@ export default function Home() {
                     <td className="py-2 px-4 border-b border-gray-200">
                       {item.password}
                     </td>
-                    <td className="py-2 px-4 border-b border-gray-200">
+                    <td className="py-2 px-4 border-b border-gray-200 flex items-center gap-4">
+                      <button
+                        onClick={() => deleteItem(item._id)}
+                        className="bg-red-500 text-white p-1 rounded"
+                      >
+                        Edit
+                      </button>
                       <button
                         onClick={() => deleteItem(item._id)}
                         className="bg-red-500 text-white p-1 rounded"
