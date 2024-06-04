@@ -1,8 +1,9 @@
 // lib/dbConnect.ts
 import mongoose from "mongoose";
 
-const MONGODB_URI: string =
-  "mongodb://127.0.0.1:27017/passwordManager?readPreference=primary&appname=MongoDB%20Compass&directConnection=true";
+const MONGODB_URI: string = "mongodb+srv://password_manager:NrfAMibolEUqWIlf@cluster0.yohkm.mongodb.net/passwordManager?retryWrites=true&w=majority";
+// "mongodb://127.0.0.1:27017/passwordManager?readPreference=primary&appname=MongoDB%20Compass&directConnection=true";
+  
 
 if (!MONGODB_URI) {
   throw new Error(
