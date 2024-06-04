@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import UpdateProfile from "./UpdateProfile";
 
 interface Item {
   _id: string;
@@ -23,6 +24,7 @@ const HomePageOverview = () => {
   const router = useRouter();
   const [items, setItems] = useState<Item[]>([]);
   const [view, setView] = useState("password");
+  const [userDetails, setUserDetails] = useState<any>();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,12 +33,31 @@ const HomePageOverview = () => {
       router.push("/login");
     } else {
       fetchItems();
+      fetchUserDetails();
     }
   }, []);
 
   useEffect(() => {
     fetchItems();
+    fetchUserDetails();
   }, []);
+
+  const fetchUserDetails = async () => {
+    const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+
+    try {
+      const response = await axios.get("/api/user", {
+        headers: {
+          Authorization: token, // Include the token in the Authorization header
+        },
+      });
+
+      console.log(response.data); // Handle the response as needed
+      setUserDetails(response?.data?.data);
+    } catch (error) {
+      console.error("Error fetching user details:", error); // Handle errors appropriately
+    }
+  };
 
   const fetchItems = async () => {
     const token = localStorage.getItem("token");
@@ -107,7 +128,13 @@ const HomePageOverview = () => {
     <div className="p-4 md:grid md:grid-cols-12 gap-4">
       <div className="col col-span-1 pr-2  w-full border-r md:border-red-600 flex md:flex-col justify-between md:justify-start border-b-2 border-b-red-500 md:border-b-0 pb-4 md:pb-0 mb-2 md:mb-0">
         <span
-          className={`font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 ${
+          className={`font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 `}
+          onClick={() => setView("password")}
+        >
+          {userDetails?.name}
+        </span>
+        <span
+          className={`md:mt-2 font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 ${
             view === "password" ? "bg-gray-200 px-2" : ""
           }`}
           onClick={() => setView("password")}
@@ -243,9 +270,10 @@ const HomePageOverview = () => {
             </div>
           </div>
         ) : (
-          <div>
-            <h2>Profile</h2>
-          </div>
+          <UpdateProfile
+            userDetails={userDetails}
+            updateUserDetails={() => fetchUserDetails()}
+          />
         )}
       </div>
       <Modal showModal={showModal} setShowModal={setShowModal}>
