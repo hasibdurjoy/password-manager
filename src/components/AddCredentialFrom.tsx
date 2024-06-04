@@ -16,14 +16,23 @@ const AddCredentialForm = ({ handleUpdateItems }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
 
     try {
-      await axios.post("/api/items", {
-        name: softwareName,
-        type: softwareType,
-        username,
-        password,
-      });
+      await axios.post(
+        "/api/items",
+        {
+          name: softwareName,
+          type: softwareType,
+          username,
+          password,
+        },
+        {
+          headers: {
+            Authorization: token, // Include the token in the Authorization header
+          },
+        }
+      );
       Swal.fire({
         position: "top-end",
         icon: "success",

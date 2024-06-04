@@ -2,22 +2,27 @@
 import { NextResponse } from "next/server";
 import dbConnect from "../lib/dbConnect";
 import Item from "../models/Item";
+import { authenticate } from "../middleware/authenticate";
 
-export async function GET() {
+const handler = async (request: any) => {
   await dbConnect();
   try {
-    const items = await Item.find({});
+    const userId = request.userId; // Get the userId from the request object
+    const items = await Item.find({ userId: userId }); // Query items by userId
     console.log(items);
 
     return NextResponse.json({ success: true, data: items });
   } catch (error) {
     return NextResponse.json({ success: false, error }, { status: 400 });
   }
-}
+};
 
-export async function POST(request: Request) {
+export const GET = authenticate(handler);
+
+const PostHandler = async (request: any) => {
   await dbConnect();
   try {
+    const userId = request.userId;
     const { username, password, type, name } = await request.json();
     if (!username || !password || !type || !name) {
       return NextResponse.json(
@@ -31,7 +36,7 @@ export async function POST(request: Request) {
       password,
       type,
       name,
-      userId: "user id",
+      userId,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -41,4 +46,6 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json({ success: false, error }, { status: 400 });
   }
-}
+};
+
+export const POST = authenticate(PostHandler);

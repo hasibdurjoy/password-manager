@@ -38,8 +38,13 @@ export default function Home() {
   }, []);
 
   const fetchItems = async () => {
+    const token = localStorage.getItem("token");
     try {
-      const res = await axios.get("/api/items");
+      const res = await axios.get("/api/items", {
+        headers: {
+          Authorization: `${token}`, // Include the token in the Authorization header
+        },
+      });
       setItems(res.data.data);
     } catch (error) {
       console.log(error);
@@ -47,6 +52,7 @@ export default function Home() {
   };
 
   const deleteItem = async (id: string) => {
+    const token = localStorage.getItem("token");
     Swal.fire({
       title: "Are you sure? you want to delete item",
       text: "You won't be able to revert this!",
@@ -58,7 +64,11 @@ export default function Home() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`/api/items/${id}`);
+          await axios.delete(`/api/items/${id}`, {
+            headers: {
+              Authorization: `${token}`,
+            },
+          });
           setItems(items.filter((item) => item._id !== id));
           Swal.fire({
             position: "top-end",
