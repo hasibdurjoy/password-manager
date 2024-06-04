@@ -46,6 +46,10 @@ const HomePageOverview = () => {
         },
       });
       setItems(res.data.data);
+      if (res.status === 401) {
+        localStorage.removeItem("token");
+        router.push("/login");
+      }
     } catch (error) {
       console.log(error);
     }
