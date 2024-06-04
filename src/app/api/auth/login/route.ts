@@ -6,8 +6,6 @@ import dbConnect from "../../lib/dbConnect";
 import User from "../../models/User";
 
 export async function POST(request: Request) {
-  console.log("calling");
-
   await dbConnect();
 
   const { username, password } = await request.json();

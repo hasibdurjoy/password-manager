@@ -49,8 +49,6 @@ const UpdateProfile = ({ userDetails, updateUserDetails }: any) => {
   };
 
   useEffect(() => {
-    console.log(userDetails);
-
     if (userDetails) {
       setUsername(userDetails?.username);
       setEmail(userDetails?.email);

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import UpdateProfile from "./UpdateProfile";
+import UpdatePassword from "./UpdatePassword";
 
 interface Item {
   _id: string;
@@ -52,7 +53,6 @@ const HomePageOverview = () => {
         },
       });
 
-      console.log(response.data); // Handle the response as needed
       setUserDetails(response?.data?.data);
     } catch (error) {
       console.error("Error fetching user details:", error); // Handle errors appropriately
@@ -126,7 +126,7 @@ const HomePageOverview = () => {
   };
   return (
     <div className="p-4 md:grid md:grid-cols-12 gap-4">
-      <div className="col col-span-1 pr-2  w-full border-r md:border-red-600 flex md:flex-col justify-between md:justify-start border-b-2 border-b-red-500 md:border-b-0 pb-4 md:pb-0 mb-2 md:mb-0">
+      <div className="col col-span-2 pr-2  w-full border-r md:border-red-600 flex md:flex-col justify-between md:justify-start border-b-2 border-b-red-500 md:border-b-0 pb-4 md:pb-0 mb-2 md:mb-0">
         <span
           className={`font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 `}
           onClick={() => setView("password")}
@@ -149,6 +149,14 @@ const HomePageOverview = () => {
         >
           Profile
         </span>
+        <span
+          className={`md:mt-2 font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 ${
+            view === "updatePassword" ? "bg-gray-200 px-2" : ""
+          }`}
+          onClick={() => setView("updatePassword")}
+        >
+          Change Password
+        </span>
 
         <span
           className="md:mt-4 p-2 font-semibold text-lg cursor-pointer hover:bg-red-800 bg-red-600 rounded-lg text-white"
@@ -161,7 +169,7 @@ const HomePageOverview = () => {
         </span>
         {/* <span className="pt-8 font-bold text-xl">Passwords</span> */}
       </div>
-      <div className="col col-span-11">
+      <div className="col col-span-10">
         {view === "password" ? (
           <div>
             <div className="flex items-center justify-between">
@@ -269,11 +277,13 @@ const HomePageOverview = () => {
               </div>
             </div>
           </div>
-        ) : (
+        ) : view === "profile" ? (
           <UpdateProfile
             userDetails={userDetails}
             updateUserDetails={() => fetchUserDetails()}
           />
+        ) : (
+          <UpdatePassword />
         )}
       </div>
       <Modal showModal={showModal} setShowModal={setShowModal}>

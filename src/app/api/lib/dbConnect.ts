@@ -3,9 +3,6 @@ import { NEXT_PUBLIC_DB_URL } from "@/environment/environment";
 import mongoose from "mongoose";
 
 const MONGODB_URI: string = NEXT_PUBLIC_DB_URL || "";
-console.log(NEXT_PUBLIC_DB_URL);
-
-  
 
 if (!MONGODB_URI) {
   throw new Error(

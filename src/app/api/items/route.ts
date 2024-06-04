@@ -9,7 +9,6 @@ const handler = async (request: any) => {
   try {
     const userId = request.userId; // Get the userId from the request object
     const items = await Item.find({ userId: userId }); // Query items by userId
-    console.log(items);
 
     return NextResponse.json({ success: true, data: items });
   } catch (error) {
