@@ -1,8 +1,10 @@
 // lib/dbConnect.ts
+import { NEXT_PUBLIC_DB_URL } from "@/environment/environment";
 import mongoose from "mongoose";
 
-const MONGODB_URI: string = "mongodb+srv://password_manager:NrfAMibolEUqWIlf@cluster0.yohkm.mongodb.net/passwordManager?retryWrites=true&w=majority";
-// "mongodb://127.0.0.1:27017/passwordManager?readPreference=primary&appname=MongoDB%20Compass&directConnection=true";
+const MONGODB_URI: string = NEXT_PUBLIC_DB_URL || "";
+console.log(NEXT_PUBLIC_DB_URL);
+
   
 
 if (!MONGODB_URI) {
