@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 interface Item {
   _id: string;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 const AddCredentialForm = ({ handleUpdateItems, type, editData }: Props) => {
+  const router = useRouter();
   const [softwareName, setSoftwareName] = useState("");
   const [softwareType, setSoftwareType] = useState("Website");
   const [username, setUsername] = useState("");
@@ -80,8 +82,12 @@ const AddCredentialForm = ({ handleUpdateItems, type, editData }: Props) => {
       setSoftwareType("Website");
       setUsername("");
       setPassword("");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving credential:", error);
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        router.push("/login");
+      }
     }
   };
 

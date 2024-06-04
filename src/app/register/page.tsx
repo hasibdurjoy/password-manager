@@ -42,6 +42,7 @@ export default function Register() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
+          required
         />
         <input
           type="text"
@@ -49,6 +50,7 @@ export default function Register() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Name"
+          required
         />
         <input
           type="number"
@@ -56,6 +58,7 @@ export default function Register() {
           value={age}
           onChange={(e) => setAge(Number(e.target.value))}
           placeholder="Age"
+          required
         />
         <input
           type="text"
@@ -63,6 +66,7 @@ export default function Register() {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
+          required
         />
         <input
           type="password"
@@ -70,6 +74,7 @@ export default function Register() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
+          required
         />
         <button
           onClick={handleRegister}
