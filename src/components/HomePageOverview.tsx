@@ -28,13 +28,15 @@ const HomePageOverview = () => {
   const [view, setView] = useState("password");
   const [userDetails, setUserDetails] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
+  const [isToken, setIsToken] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
+      setIsToken(false);
       router.push("/login");
     } else {
+      setIsToken(true);
       fetchItems();
       fetchUserDetails();
     }
@@ -131,184 +133,193 @@ const HomePageOverview = () => {
     setEditModal(false);
   };
   return (
-    <div className="p-4 md:grid md:grid-cols-12 gap-4">
-      <div className="col col-span-2 pr-2  w-full  flex md:flex-col justify-between md:justify-start border-b-2 border-b-red-500 md:border-b-0 pb-4 md:pb-0 mb-2 md:mb-0">
-        <span
-          className={`font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 `}
-          onClick={() => setView("password")}
-        >
-          {userDetails?.name}
-        </span>
-        <span
-          className={`md:mt-2 font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 ${
-            view === "password" ? "bg-gray-200 px-2" : ""
-          }`}
-          onClick={() => setView("password")}
-        >
-          Passwords
-        </span>
-        <span
-          className={`md:mt-2 font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 ${
-            view === "profile" ? "bg-gray-200 px-2" : ""
-          }`}
-          onClick={() => setView("profile")}
-        >
-          Profile
-        </span>
-        <span
-          className={`md:mt-2 font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 ${
-            view === "updatePassword" ? "bg-gray-200 px-2" : ""
-          }`}
-          onClick={() => setView("updatePassword")}
-        >
-          Change Password
-        </span>
+    <>
+      {isToken ? (
+        <div className="p-4 md:grid md:grid-cols-12 gap-4">
+          <div className="col col-span-2 pr-2  w-full  flex md:flex-col justify-between md:justify-start border-b-2 border-b-red-500 md:border-b-0 pb-4 md:pb-0 mb-2 md:mb-0">
+            <span
+              className={`font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 `}
+              onClick={() => setView("password")}
+            >
+              {userDetails?.name}
+            </span>
+            <span
+              className={`md:mt-2 font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 ${
+                view === "password" ? "bg-gray-200 px-2" : ""
+              }`}
+              onClick={() => setView("password")}
+            >
+              Passwords
+            </span>
+            <span
+              className={`md:mt-2 font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 ${
+                view === "profile" ? "bg-gray-200 px-2" : ""
+              }`}
+              onClick={() => setView("profile")}
+            >
+              Profile
+            </span>
+            <span
+              className={`md:mt-2 font-semibold text-lg cursor-pointer hover:bg-gray-400 px-2 ${
+                view === "updatePassword" ? "bg-gray-200 px-2" : ""
+              }`}
+              onClick={() => setView("updatePassword")}
+            >
+              Change Password
+            </span>
 
-        <span
-          className="md:mt-4 p-2 font-semibold text-lg cursor-pointer hover:bg-red-800 bg-red-600 rounded-lg text-white"
-          onClick={() => {
-            localStorage.removeItem("token");
-            router.push("/login");
-          }}
-        >
-          Log Out
-        </span>
-        {/* <span className="pt-8 font-bold text-xl">Passwords</span> */}
-      </div>
-      <div className="col col-span-10">
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <>
-            {view === "password" ? (
-              <div>
-                <div className="flex items-center justify-between">
-                  <h1 className="md:text-2xl font-bold mb-4">
-                    Manage Your Passwords
-                  </h1>
-                  <button
-                    onClick={() => setShowModal(true)}
-                    className="bg-green-500 text-white p-1 rounded"
-                  >
-                    Add New
-                  </button>
-                </div>
-
-                <div>
+            <span
+              className="md:mt-4 p-2 font-semibold text-lg cursor-pointer hover:bg-red-800 bg-red-600 rounded-lg text-white"
+              onClick={() => {
+                localStorage.removeItem("token");
+                router.push("/login");
+              }}
+            >
+              Log Out
+            </span>
+            {/* <span className="pt-8 font-bold text-xl">Passwords</span> */}
+          </div>
+          <div className="col col-span-10">
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <>
+                {view === "password" ? (
                   <div>
-                    <div className="overflow-x-auto">
-                      <table className="w-full bg-white border border-gray-200">
-                        <thead>
-                          <tr>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                              Name
-                            </th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                              Type
-                            </th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                              Username
-                            </th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                              Password
-                            </th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-600">
-                              Created At
-                            </th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-600">
-                              Last Modified
-                            </th>
-                            <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-right text-sm font-semibold text-gray-600">
-                              Actions
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {items.map((item, index) => (
-                            <tr key={index}>
-                              <td className="py-2 px-4 border-b border-gray-200">
-                                {item.name}
-                              </td>
-                              <td className="py-2 px-4 border-b border-gray-200">
-                                {item.type}
-                              </td>
-                              <td className="py-2 px-4 border-b border-gray-200">
-                                {item.username}
-                              </td>
-                              <td className="py-2 px-4 border-b border-gray-200">
-                                {item.password}
-                              </td>
-                              <td className="py-2 px-4 border-b border-gray-200 text-center">
-                                {new Intl.DateTimeFormat("en-US", {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                }).format(new Date(item.createdAt))}
-                                <br />
-                                {new Intl.DateTimeFormat("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }).format(new Date(item.createdAt))}
-                              </td>
-                              <td className="py-2 px-4 border-b border-gray-200 text-center">
-                                {new Intl.DateTimeFormat("en-US", {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                }).format(new Date(item.updatedAt))}
-                                <br />
-                                {new Intl.DateTimeFormat("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }).format(new Date(item.updatedAt))}
-                              </td>
-                              <td className="py-4 px-4 border-b border-gray-200 flex items-end justify-end gap-4">
-                                <button
-                                  onClick={() => {
-                                    setEditData(item);
-                                    setEditModal(true);
-                                  }}
-                                  className="bg-blue-500 text-white p-1 rounded"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => deleteItem(item._id)}
-                                  className="bg-red-500 text-white p-1 rounded"
-                                >
-                                  Delete
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                    <div className="flex items-center justify-between">
+                      <h1 className="md:text-2xl font-bold mb-4">
+                        Manage Your Passwords
+                      </h1>
+                      <button
+                        onClick={() => setShowModal(true)}
+                        className="bg-green-500 text-white p-1 rounded"
+                      >
+                        Add New
+                      </button>
+                    </div>
+
+                    <div>
+                      <div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full bg-white border border-gray-200">
+                            <thead>
+                              <tr>
+                                <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                                  Name
+                                </th>
+                                <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                                  Type
+                                </th>
+                                <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                                  Username
+                                </th>
+                                <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                                  Password
+                                </th>
+                                <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-600">
+                                  Created At
+                                </th>
+                                <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-600">
+                                  Last Modified
+                                </th>
+                                <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-right text-sm font-semibold text-gray-600">
+                                  Actions
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {items.map((item, index) => (
+                                <tr key={index}>
+                                  <td className="py-2 px-4 border-b border-gray-200">
+                                    {item.name}
+                                  </td>
+                                  <td className="py-2 px-4 border-b border-gray-200">
+                                    {item.type}
+                                  </td>
+                                  <td className="py-2 px-4 border-b border-gray-200">
+                                    {item.username}
+                                  </td>
+                                  <td className="py-2 px-4 border-b border-gray-200">
+                                    {item.password}
+                                  </td>
+                                  <td className="py-2 px-4 border-b border-gray-200 text-center">
+                                    {new Intl.DateTimeFormat("en-US", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                    }).format(new Date(item.createdAt))}
+                                    <br />
+                                    {new Intl.DateTimeFormat("en-US", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    }).format(new Date(item.createdAt))}
+                                  </td>
+                                  <td className="py-2 px-4 border-b border-gray-200 text-center">
+                                    {new Intl.DateTimeFormat("en-US", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                    }).format(new Date(item.updatedAt))}
+                                    <br />
+                                    {new Intl.DateTimeFormat("en-US", {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    }).format(new Date(item.updatedAt))}
+                                  </td>
+                                  <td className="py-4 px-4 border-b border-gray-200 flex items-end justify-end gap-4">
+                                    <button
+                                      onClick={() => {
+                                        setEditData(item);
+                                        setEditModal(true);
+                                      }}
+                                      className="bg-blue-500 text-white p-1 rounded"
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      onClick={() => deleteItem(item._id)}
+                                      className="bg-red-500 text-white p-1 rounded"
+                                    >
+                                      Delete
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ) : view === "profile" ? (
-              <UpdateProfile
-                userDetails={userDetails}
-                updateUserDetails={() => fetchUserDetails()}
-              />
-            ) : (
-              <UpdatePassword />
+                ) : view === "profile" ? (
+                  <UpdateProfile
+                    userDetails={userDetails}
+                    updateUserDetails={() => fetchUserDetails()}
+                  />
+                ) : (
+                  <UpdatePassword />
+                )}
+              </>
             )}
-          </>
-        )}
-      </div>
-      <Modal showModal={showModal} setShowModal={setShowModal}>
-        <AddCredentialForm handleUpdateItems={handleUpdateItems} type="new" />
-      </Modal>
-      <Modal showModal={editModal} setShowModal={setEditModal}>
-        <AddCredentialForm
-          handleUpdateItems={handleUpdateItems}
-          type="edit"
-          editData={editData}
-        />
-      </Modal>
-    </div>
+          </div>
+          <Modal showModal={showModal} setShowModal={setShowModal}>
+            <AddCredentialForm
+              handleUpdateItems={handleUpdateItems}
+              type="new"
+            />
+          </Modal>
+          <Modal showModal={editModal} setShowModal={setEditModal}>
+            <AddCredentialForm
+              handleUpdateItems={handleUpdateItems}
+              type="edit"
+              editData={editData}
+            />
+          </Modal>
+        </div>
+      ) : (
+        <Loader />
+      )}
+    </>
   );
 };
 
