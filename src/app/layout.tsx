@@ -14,7 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <div className="h-[60px] bg-orange-500 px-4 flex items-center">
+          <span className="text-xl font-bold">Welcome To Password Manager</span>
+        </div>
+        {children}
+      </body>
     </html>
   );
 }

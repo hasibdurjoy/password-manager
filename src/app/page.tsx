@@ -91,103 +91,120 @@ export default function Home() {
   };
 
   return (
-    <div className="xs:max-w-lg max-w-5xl mx-auto p-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold mb-4">Password Manager</h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-green-500 text-white p-1 rounded"
-        >
-          Add New
-        </button>
-      </div>
+    <div className="p-4 grid grid-cols-12 gap-4">
+      <div className="col col-span-1 h-full w-full border-r border-red-600 flex flex-col">
+        <span className="font-bold text-xl">Passwords</span>
+        <span className="pt-8 font-bold text-xl">Profile</span>
 
-      <div>
-        <div className="container mx-auto p-4">
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                    Name
-                  </th>
-                  <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                    Type
-                  </th>
-                  <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                    Username
-                  </th>
-                  <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                    Password
-                  </th>
-                  <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                    Created At
-                  </th>
-                  <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                    Last Modified
-                  </th>
-                  <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, index) => (
-                  <tr key={index}>
-                    <td className="py-2 px-4 border-b border-gray-200">
-                      {item.name}
-                    </td>
-                    <td className="py-2 px-4 border-b border-gray-200">
-                      {item.type}
-                    </td>
-                    <td className="py-2 px-4 border-b border-gray-200">
-                      {item.username}
-                    </td>
-                    <td className="py-2 px-4 border-b border-gray-200">
-                      {item.password}
-                    </td>
-                    <td className="py-2 px-4 border-b border-gray-200">
-                      {new Intl.DateTimeFormat("en-US", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      }).format(new Date(item.createdAt))}
-                      <br />
-                      {new Intl.DateTimeFormat("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      }).format(new Date(item.createdAt))}
-                    </td>
-                    <td className="py-2 px-4 border-b border-gray-200">
-                      {new Intl.DateTimeFormat("en-US", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      }).format(new Date(item.updatedAt))}
-                      <br />
-                      {new Intl.DateTimeFormat("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      }).format(new Date(item.updatedAt))}
-                    </td>
-                    <td className="py-2 px-4 border-b border-gray-200 flex items-center gap-4">
-                      <button
-                        onClick={() => deleteItem(item._id)}
-                        className="bg-red-500 text-white p-1 rounded"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deleteItem(item._id)}
-                        className="bg-red-500 text-white p-1 rounded"
-                      >
-                        Delete
-                      </button>
-                    </td>
+        <span
+          className="pt-8 font-bold text-xl cursor-pointer"
+          onClick={() => {
+            localStorage.removeItem("token");
+            router.push("/login");
+          }}
+        >
+          Log Out
+        </span>
+        {/* <span className="pt-8 font-bold text-xl">Passwords</span> */}
+      </div>
+      <div className="col col-span-11">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold mb-4">Password Manager</h1>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-green-500 text-white p-1 rounded"
+          >
+            Add New
+          </button>
+        </div>
+
+        <div>
+          <div>
+            <div className="overflow-x-auto">
+              <table className="w-full bg-white border border-gray-200">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                      Name
+                    </th>
+                    <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                      Type
+                    </th>
+                    <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                      Username
+                    </th>
+                    <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                      Password
+                    </th>
+                    <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                      Created At
+                    </th>
+                    <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                      Last Modified
+                    </th>
+                    <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {items.map((item, index) => (
+                    <tr key={index}>
+                      <td className="py-2 px-4 border-b border-gray-200">
+                        {item.name}
+                      </td>
+                      <td className="py-2 px-4 border-b border-gray-200">
+                        {item.type}
+                      </td>
+                      <td className="py-2 px-4 border-b border-gray-200">
+                        {item.username}
+                      </td>
+                      <td className="py-2 px-4 border-b border-gray-200">
+                        {item.password}
+                      </td>
+                      <td className="py-2 px-4 border-b border-gray-200">
+                        {new Intl.DateTimeFormat("en-US", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }).format(new Date(item.createdAt))}
+                        <br />
+                        {new Intl.DateTimeFormat("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }).format(new Date(item.createdAt))}
+                      </td>
+                      <td className="py-2 px-4 border-b border-gray-200">
+                        {new Intl.DateTimeFormat("en-US", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }).format(new Date(item.updatedAt))}
+                        <br />
+                        {new Intl.DateTimeFormat("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }).format(new Date(item.updatedAt))}
+                      </td>
+                      <td className="py-4 px-4 border-b border-gray-200 flex items-center gap-4">
+                        <button
+                          onClick={() => deleteItem(item._id)}
+                          className="bg-red-500 text-white p-1 rounded"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deleteItem(item._id)}
+                          className="bg-red-500 text-white p-1 rounded"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
