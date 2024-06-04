@@ -1,56 +1,98 @@
 // components/AddCredentialForm.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
+interface Item {
+  _id: string;
+  name: string;
+  type: string;
+  username: string;
+  password: string;
+  createdAt: string;
+  updatedAt: string;
+}
 interface Props {
+  type: string;
   handleUpdateItems: () => void;
+  editData?: Item;
 }
 
-const AddCredentialForm = ({ handleUpdateItems }: Props) => {
+const AddCredentialForm = ({ handleUpdateItems, type, editData }: Props) => {
   const [softwareName, setSoftwareName] = useState("");
   const [softwareType, setSoftwareType] = useState("Website");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [userId, setUserId] = useState(""); // Add logic to get the actual user ID
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
     try {
-      await axios.post(
-        "/api/items",
-        {
-          name: softwareName,
-          type: softwareType,
-          username,
-          password,
-        },
-        {
-          headers: {
-            Authorization: token, // Include the token in the Authorization header
+      if (type === "edit" && editData?._id) {
+        await axios.put(
+          `/api/items/${editData._id}`,
+          {
+            name: softwareName,
+            type: softwareType,
+            username,
+            password,
           },
-        }
-      );
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Password Saved Successfully",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+          {
+            headers: {
+              Authorization: token, // Include the token in the Authorization header
+            },
+          }
+        );
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Password Updated Successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        await axios.post(
+          "/api/items",
+          {
+            name: softwareName,
+            type: softwareType,
+            username,
+            password,
+          },
+          {
+            headers: {
+              Authorization: token, // Include the token in the Authorization header
+            },
+          }
+        );
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Password Saved Successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
 
       handleUpdateItems();
       setSoftwareName("");
       setSoftwareType("Website");
       setUsername("");
       setPassword("");
-      setUserId("");
     } catch (error) {
-      console.error("Error adding credential:", error);
+      console.error("Error saving credential:", error);
     }
   };
+
+  useEffect(() => {
+    if (type === "edit") {
+      setSoftwareName(editData?.name ?? "");
+      setSoftwareType(editData?.type ?? "");
+      setUsername(editData?.username ?? "");
+      setPassword(editData?.password ?? "");
+    }
+  }, [type, editData]);
 
   return (
     <form
@@ -108,7 +150,7 @@ const AddCredentialForm = ({ handleUpdateItems }: Props) => {
         type="submit"
         className="bg-blue-500 text-white p-2 rounded w-full"
       >
-        Add Credential
+        {type === "new" ? "Add Credential" : "Update Credential"}
       </button>
     </form>
   );
