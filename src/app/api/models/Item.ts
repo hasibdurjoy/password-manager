@@ -15,7 +15,7 @@ const ItemSchema: Schema<IItem> = new Schema({
   name: {
     type: String,
     required: [true, "Please provide a name for this item."],
-    maxlength: [20, "Name cannot be more than 20 characters"],
+    maxlength: [100, "Name cannot be more than 100 characters"],
   },
   type: {
     type: String,
