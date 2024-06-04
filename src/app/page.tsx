@@ -1,9 +1,11 @@
 // app/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import AddCredentialForm from "@/components/AddCredentialFrom";
+import Modal from "@/components/Modal";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 interface Item {
@@ -12,15 +14,14 @@ interface Item {
   type: string;
   username: string;
   password: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function Home() {
+  const [showModal, setShowModal] = useState<boolean>(false);
   const router = useRouter();
   const [items, setItems] = useState<Item[]>([]);
-  const [name, setName] = useState("");
-  const [type, setType] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -40,27 +41,6 @@ export default function Home() {
     try {
       const res = await axios.get("/api/items");
       setItems(res.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const addItem = async () => {
-    try {
-      await axios.post("/api/items", {
-        name,
-        type,
-        username,
-        password,
-      });
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Password Saved Successfully",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      fetchItems();
     } catch (error) {
       console.log(error);
     }
@@ -95,45 +75,23 @@ export default function Home() {
     });
   };
 
+  const handleUpdateItems = () => {
+    fetchItems();
+    setShowModal(false);
+  };
+
   return (
-    <div className="xs:max-w-lg max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">CRUD Application</h1>
-      <div className="mb-4 max-w-md">
-        <input
-          type="text"
-          className="border p-2 w-full mb-2"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter item name"
-        />
-        <input
-          type="text"
-          className="border p-2 w-full mb-2"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          placeholder="Enter item type"
-        />
-        <input
-          type="text"
-          className="border p-2 w-full mb-2"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter item type"
-        />
-        <input
-          type="text"
-          className="border p-2 w-full mb-2"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter item type"
-        />
+    <div className="xs:max-w-lg max-w-5xl mx-auto p-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold mb-4">Password Manager</h1>
         <button
-          onClick={addItem}
-          className="bg-blue-500 text-white p-2 rounded"
+          onClick={() => setShowModal(true)}
+          className="bg-green-500 text-white p-1 rounded"
         >
-          Add Item
+          Add New
         </button>
       </div>
+
       <div>
         <div className="container mx-auto p-4">
           <div className="overflow-x-auto">
@@ -151,6 +109,12 @@ export default function Home() {
                   </th>
                   <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
                     Password
+                  </th>
+                  <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                    Created At
+                  </th>
+                  <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
+                    Last Modified
                   </th>
                   <th className="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600">
                     Actions
@@ -171,6 +135,30 @@ export default function Home() {
                     </td>
                     <td className="py-2 px-4 border-b border-gray-200">
                       {item.password}
+                    </td>
+                    <td className="py-2 px-4 border-b border-gray-200">
+                      {new Intl.DateTimeFormat("en-US", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }).format(new Date(item.createdAt))}
+                      <br />
+                      {new Intl.DateTimeFormat("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }).format(new Date(item.createdAt))}
+                    </td>
+                    <td className="py-2 px-4 border-b border-gray-200">
+                      {new Intl.DateTimeFormat("en-US", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }).format(new Date(item.updatedAt))}
+                      <br />
+                      {new Intl.DateTimeFormat("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }).format(new Date(item.updatedAt))}
                     </td>
                     <td className="py-2 px-4 border-b border-gray-200 flex items-center gap-4">
                       <button
@@ -193,6 +181,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <Modal showModal={showModal} setShowModal={setShowModal}>
+        <AddCredentialForm handleUpdateItems={handleUpdateItems} />
+      </Modal>
     </div>
   );
 }

@@ -1,8 +1,13 @@
 // components/AddCredentialForm.tsx
 import { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
-const AddCredentialForm = ({ addItem }: any) => {
+interface Props {
+  handleUpdateItems: () => void;
+}
+
+const AddCredentialForm = ({ handleUpdateItems }: Props) => {
   const [softwareName, setSoftwareName] = useState("");
   const [softwareType, setSoftwareType] = useState("Website");
   const [username, setUsername] = useState("");
@@ -13,26 +18,21 @@ const AddCredentialForm = ({ addItem }: any) => {
     e.preventDefault();
 
     try {
-      /*  const response = await axios.post("/api/credentials", {
-        softwareName,
-        softwareType,
+      await axios.post("/api/items", {
+        name: softwareName,
+        type: softwareType,
         username,
         password,
-        userId,
-      }); */
-
-      addItem({
-        softwareName,
-        softwareType,
-        username,
-        password,
-        userId,
-        dateCreated: new Date(),
-        dateUpdated: new Date(),
+      });
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Password Saved Successfully",
+        showConfirmButton: false,
+        timer: 1500,
       });
 
-      // console.log("Credential added:", response.data);
-      // Reset form fields
+      handleUpdateItems();
       setSoftwareName("");
       setSoftwareType("Website");
       setUsername("");
@@ -46,9 +46,9 @@ const AddCredentialForm = ({ addItem }: any) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-md mx-auto p-4 border rounded"
+      className="mx-auto p-4 border rounded bg-white w-[400px]"
     >
-      <h2 className="text-2xl font-bold mb-4">Add Credential</h2>
+      <h2 className="text-2xl font-bold mb-4">Add New Password</h2>
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Software Name</label>
         <input
@@ -92,17 +92,6 @@ const AddCredentialForm = ({ addItem }: any) => {
           onChange={(e) => setPassword(e.target.value)}
           className="border p-2 w-full"
           placeholder="Enter password"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">User ID</label>
-        <input
-          type="text"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-          className="border p-2 w-full"
-          placeholder="Enter user ID"
           required
         />
       </div>

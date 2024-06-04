@@ -31,6 +31,9 @@ export async function POST(request: Request) {
       password,
       type,
       name,
+      userId: "user id",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     await item.save();

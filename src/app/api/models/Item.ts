@@ -1,14 +1,17 @@
 // models/Item.ts
-import mongoose, { Model } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-export interface IItem extends mongoose.Document {
+export interface IItem extends Document {
   name: string;
   type: string;
   username: string;
   password: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const ItemSchema = new mongoose.Schema<IItem>({
+const ItemSchema: Schema<IItem> = new Schema({
   name: {
     type: String,
     required: [true, "Please provide a name for this item."],
@@ -16,15 +19,29 @@ const ItemSchema = new mongoose.Schema<IItem>({
   },
   type: {
     type: String,
-    required: [true, "Please provide a name for this item."],
+    required: [true, "Please provide a type for this item."],
   },
   username: {
     type: String,
-    required: [true, "Please provide a name for this item."],
+    required: [true, "Please provide a username for this item."],
   },
   password: {
     type: String,
-    required: [true, "Please provide a name for this item."],
+    required: [true, "Please provide a password for this item."],
+  },
+  userId: {
+    type: String,
+    required: [true, "Please provide a password for this item."],
+  },
+  createdAt: {
+    type: Date,
+    required: [true, "Please provide a password for this item."],
+    default: new Date(),
+  },
+  updatedAt: {
+    type: Date,
+    required: [true, "Please provide a password for this item."],
+    default: new Date(),
   },
 });
 
